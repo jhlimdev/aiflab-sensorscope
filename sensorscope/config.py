@@ -37,7 +37,7 @@ MACHINES = {
 
 @dataclass(frozen=True)
 class Settings:
-    db_path: Path = Path("data/factorypulse.sqlite3")
+    db_path: Path = Path("data/sensorscope.sqlite3")
     simulator: bool = True
     interval: float = 1.0
     threshold: float = 3.5
@@ -47,21 +47,21 @@ class Settings:
 
     def __post_init__(self):
         if not math.isfinite(self.interval) or not 0.1 <= self.interval <= 60:
-            raise ValueError("FP_INTERVAL must be finite and between 0.1 and 60 seconds")
+            raise ValueError("SS_INTERVAL must be finite and between 0.1 and 60 seconds")
         if not math.isfinite(self.threshold) or not 1 <= self.threshold <= 10:
-            raise ValueError("FP_THRESHOLD must be finite and between 1 and 10")
+            raise ValueError("SS_THRESHOLD must be finite and between 1 and 10")
         if self.reading_limit < 1 or self.event_limit < 1:
             raise ValueError("Retention limits must be positive")
 
     @classmethod
     def from_env(cls):
-        mode = os.getenv("FP_SIMULATOR", "true").lower()
+        mode = os.getenv("SS_SIMULATOR", "true").lower()
         if mode not in {"true", "false"}:
-            raise ValueError("FP_SIMULATOR must be true or false")
+            raise ValueError("SS_SIMULATOR must be true or false")
         return cls(
-            db_path=Path(os.getenv("FP_DB_PATH", "data/factorypulse.sqlite3")),
+            db_path=Path(os.getenv("SS_DB_PATH", "data/sensorscope.sqlite3")),
             simulator=mode == "true",
-            interval=float(os.getenv("FP_INTERVAL", "1")),
-            threshold=float(os.getenv("FP_THRESHOLD", "3.5")),
-            seed=int(os.getenv("FP_SEED", "2026")),
+            interval=float(os.getenv("SS_INTERVAL", "1")),
+            threshold=float(os.getenv("SS_THRESHOLD", "3.5")),
+            seed=int(os.getenv("SS_SEED", "2026")),
         )

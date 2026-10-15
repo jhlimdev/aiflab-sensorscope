@@ -6,7 +6,7 @@
 |---|---|---|
 | 자동 테스트 | Python 3.12.14, `pytest -q` | **33 passed** |
 | 정적 검사 | `ruff check .`, `ruff format --check .` | 통과 |
-| JavaScript 구문 | `node --check factorypulse/static/app.js` | 통과 |
+| JavaScript 구문 | `node --check sensorscope/static/app.js` | 통과 |
 | Python 의존성 | `pip check` | 충돌 없음 |
 | Python 직접 실행 | macOS ARM64, Uvicorn, `/api/health` | 정상 응답 |
 | Docker 실행 | Docker 29.8.1, Compose, `python:3.12-slim` | 이미지 빌드 및 healthy 확인 |

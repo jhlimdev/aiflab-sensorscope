@@ -1,4 +1,4 @@
-"""Replay numeric CSV rows into an instance started with FP_SIMULATOR=false."""
+"""Replay numeric CSV rows into an instance started with SS_SIMULATOR=false."""
 
 import argparse
 import csv

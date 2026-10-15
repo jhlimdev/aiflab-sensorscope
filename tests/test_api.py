@@ -4,8 +4,8 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from fastapi.testclient import TestClient
 
-from factorypulse.config import Settings
-from factorypulse.main import create_app
+from sensorscope.config import Settings
+from sensorscope.main import create_app
 
 
 @pytest.fixture
@@ -128,7 +128,7 @@ def test_query_validation(client, url):
 
 def test_dashboard_assets_and_health(client):
     assert client.get("/api/health").json()["status"] == "ok"
-    assert "FactoryPulse" in client.get("/").text
+    assert "AIFLab SensorScope" in client.get("/").text
     assert client.get("/static/vendor/chart.umd.min.js").status_code == 200
     assert client.get("/openapi.json").status_code == 200
     assert client.post("/api/demo/anomaly", json={"machine_id": "press-01"}).status_code == 409

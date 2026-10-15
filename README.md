@@ -1,10 +1,10 @@
-# FactoryPulse
+# AIFLab SensorScope
 
 **산업 설비 센서 데이터 기반 실시간 이상 징후 탐지 및 모니터링 시스템**
 
 A lightweight industrial sensor anomaly monitoring demo.
 
-[![Tests](https://github.com/jhlimdev/factorypulse/actions/workflows/ci.yml/badge.svg)](https://github.com/jhlimdev/factorypulse/actions/workflows/ci.yml)
+[![Tests](https://github.com/jhlimdev/aiflab-sensorscope/actions/workflows/ci.yml/badge.svg)](https://github.com/jhlimdev/aiflab-sensorscope/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
 ![License](https://img.shields.io/badge/license-MIT-6bdfbd)
 
@@ -15,7 +15,7 @@ A lightweight industrial sensor anomaly monitoring demo.
 > **연구·교육용 MVP입니다.** 데이터와 기준값은 모두 합성한 데모 값입니다.
 > 실제 산업 설비에서 검증한 정확도, 고장 예측, 안전 제어, 디지털 트윈 기능을 주장하지 않습니다.
 
-![FactoryPulse 실제 실행 화면](docs/images/dashboard.png)
+![AIFLab SensorScope 실제 실행 화면](docs/images/dashboard.png)
 
 ## 주요 기능
 
@@ -33,8 +33,8 @@ A lightweight industrial sensor anomaly monitoring demo.
 Docker Desktop 또는 Docker Engine + Compose v2가 필요합니다.
 
 ```bash
-git clone https://github.com/jhlimdev/factorypulse.git
-cd factorypulse
+git clone https://github.com/jhlimdev/aiflab-sensorscope.git
+cd aiflab-sensorscope
 docker compose up --build -d --wait
 ```
 
@@ -53,8 +53,8 @@ docker compose down
 
 `down` 후에도 이름 있는 볼륨에 데이터가 유지됩니다. **모든 데모 기록을 삭제**하려면
 `docker compose down -v`를 실행합니다. 8000번 포트가 사용 중이면 macOS/Linux에서
-`FP_PORT=8001 docker compose up --build -d --wait`를 실행하세요. Windows에서는
-`.env.example`을 `.env`로 복사하고 `FP_PORT=8001`로 바꿀 수 있습니다.
+`SS_PORT=8001 docker compose up --build -d --wait`를 실행하세요. Windows에서는
+`.env.example`을 `.env`로 복사하고 `SS_PORT=8001`로 바꿀 수 있습니다.
 
 ## Python 직접 실행
 
@@ -64,12 +64,12 @@ Python **3.12 이상**을 사용하세요. 첫 설치에는 인터넷 연결이 
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python -m uvicorn factorypulse.main:app --host 127.0.0.1 --port 8000
+python -m uvicorn sensorscope.main:app --host 127.0.0.1 --port 8000
 ```
 
 Windows PowerShell에서는 `py -3.12 -m venv .venv` 후
 `.\.venv\Scripts\Activate.ps1`로 활성화합니다. 종료는 `Ctrl+C`입니다.
-기본 데이터베이스는 `data/factorypulse.sqlite3`이며 Git에는 포함되지 않습니다.
+기본 데이터베이스는 `data/sensorscope.sqlite3`이며 Git에는 포함되지 않습니다.
 실행 시 **worker는 1개**를 사용하세요. 각 프로세스가 자체 시뮬레이터를 실행합니다.
 
 Chart.js를 저장소에 포함하므로 대시보드는 실행 중 CDN이 필요하지 않습니다.
@@ -84,8 +84,8 @@ seed는 `2026`으로 **기준 데이터와 실행 데이터는 분리**됩니다
 
 ```text
 z = abs(x - μ) / max(s, 최소 표준편차)
-하나 이상의 센서에서 z >= FP_THRESHOLD 이면 해당 측정값을 이상으로 기록
-기본 FP_THRESHOLD = 3.5
+하나 이상의 센서에서 z >= SS_THRESHOLD 이면 해당 측정값을 이상으로 기록
+기본 SS_THRESHOLD = 3.5
 ```
 
 기준은 실행 데이터로 갱신하지 않습니다. 연속 이상값이 정상 기준에 흡수되는 것을
@@ -113,12 +113,12 @@ z = abs(x - μ) / max(s, 최소 표준편차)
 Python 실행 시 아래처럼 별도의 DB를 사용하세요.
 
 ```bash
-FP_SIMULATOR=false FP_DB_PATH=data/external.sqlite3 \
-  python -m uvicorn factorypulse.main:app --host 127.0.0.1 --port 8000
+SS_SIMULATOR=false SS_DB_PATH=data/external.sqlite3 \
+  python -m uvicorn sensorscope.main:app --host 127.0.0.1 --port 8000
 ```
 
-PowerShell에서는 `$env:FP_SIMULATOR="false"; $env:FP_DB_PATH="data/external.sqlite3"`를
-설정한 뒤 서버를 실행합니다. Docker에서는 `.env`의 `FP_SIMULATOR=false` 설정 후
+PowerShell에서는 `$env:SS_SIMULATOR="false"; $env:SS_DB_PATH="data/external.sqlite3"`를
+설정한 뒤 서버를 실행합니다. Docker에서는 `.env`의 `SS_SIMULATOR=false` 설정 후
 `docker compose up -d`로 컨테이너를 재생성합니다.
 
 별도 터미널에서 다음을 실행합니다.
@@ -165,15 +165,15 @@ NaN/Infinity, 누락·추가 필드, 미등록 설비, 범위를 벗어난 수�
 
 | 환경 변수 | 기본값 | 설명 |
 |---|---|---|
-| `FP_SIMULATOR` | `true` | `true` 또는 `false` |
-| `FP_INTERVAL` | `1` | 센서 생성 간격, 0.1~60초 |
-| `FP_THRESHOLD` | `3.5` | 절대 z-score 임곗값, 1~10 |
-| `FP_SEED` | `2026` | 실행 데이터 난수 seed |
-| `FP_DB_PATH` | `data/factorypulse.sqlite3` | Python 실행 DB 경로 |
-| `FP_PORT` | `8000` | Docker Compose의 호스트 포트 |
+| `SS_SIMULATOR` | `true` | `true` 또는 `false` |
+| `SS_INTERVAL` | `1` | 센서 생성 간격, 0.1~60초 |
+| `SS_THRESHOLD` | `3.5` | 절대 z-score 임곗값, 1~10 |
+| `SS_SEED` | `2026` | 실행 데이터 난수 seed |
+| `SS_DB_PATH` | `data/sensorscope.sqlite3` | Python 실행 DB 경로 |
+| `SS_PORT` | `8000` | Docker Compose의 호스트 포트 |
 
 Compose는 `.env`를 읽습니다. Python 직접 실행은 환경 변수를 읽으며 `.env`를
-자동으로 불러오지 않습니다. Docker의 DB 경로는 `/app/data/factorypulse.sqlite3`로 고정됩니다.
+자동으로 불러오지 않습니다. Docker의 DB 경로는 `/app/data/sensorscope.sqlite3`로 고정됩니다.
 
 이 MVP에는 인증·권한 관리가 없으므로 기본값인 로컬 루프백 주소에서 실행하세요.
 인터넷 공개 서비스로 운영하려면 인증, TLS, 요청 제한, 백업, 동시성 설계를 추가해야 합니다.
@@ -202,7 +202,7 @@ python scripts/browser_smoke.py --url http://127.0.0.1:8000
 ## 구조
 
 ```text
-factorypulse/
+sensorscope/
   config.py       데모 설비·단위·설정
   detector.py     기준 생성과 고정 z-score 판정
   models.py       입력 검증

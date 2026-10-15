@@ -65,7 +65,7 @@ def create_app(settings: Settings | None = None):
             app.state.store.close()
 
     app = FastAPI(
-        title="FactoryPulse",
+        title="AIFLab SensorScope",
         version=__version__,
         lifespan=lifespan,
         description="Synthetic industrial sensor monitoring demo. Not a safety or predictive-maintenance system.",
@@ -132,7 +132,7 @@ def create_app(settings: Settings | None = None):
     @app.post("/api/readings", status_code=201)
     async def add_reading(reading: Reading):
         if settings.simulator:
-            raise HTTPException(409, "Set FP_SIMULATOR=false before submitting external readings")
+            raise HTTPException(409, "Set SS_SIMULATOR=false before submitting external readings")
         return ingest(app, reading, "external")
 
     @app.post("/api/demo/anomaly", status_code=202)

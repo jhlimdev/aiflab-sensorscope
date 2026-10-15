@@ -1,17 +1,17 @@
 services:
-  factorypulse:
+  sensorscope:
     build: .
     ports:
-      - "127.0.0.1:${FP_PORT:-8000}:8000"
+      - "127.0.0.1:${SS_PORT:-8000}:8000"
     environment:
-      FP_DB_PATH: /app/data/factorypulse.sqlite3
-      FP_SIMULATOR: ${FP_SIMULATOR:-true}
-      FP_INTERVAL: ${FP_INTERVAL:-1}
-      FP_THRESHOLD: ${FP_THRESHOLD:-3.5}
-      FP_SEED: ${FP_SEED:-2026}
+      SS_DB_PATH: /app/data/sensorscope.sqlite3
+      SS_SIMULATOR: ${SS_SIMULATOR:-true}
+      SS_INTERVAL: ${SS_INTERVAL:-1}
+      SS_THRESHOLD: ${SS_THRESHOLD:-3.5}
+      SS_SEED: ${SS_SEED:-2026}
     volumes:
-      - factorypulse-data:/app/data
+      - sensorscope-data:/app/data
     restart: unless-stopped
 
 volumes:
-  factorypulse-data:
+  sensorscope-data:

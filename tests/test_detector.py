@@ -3,9 +3,9 @@ import math
 
 import pytest
 
-from factorypulse.config import MACHINES, METRICS, Settings
-from factorypulse.detector import Detector
-from factorypulse.simulator import Simulator
+from sensorscope.config import MACHINES, METRICS, Settings
+from sensorscope.detector import Detector
+from sensorscope.simulator import Simulator
 
 
 @pytest.mark.parametrize("machine_id", MACHINES)
