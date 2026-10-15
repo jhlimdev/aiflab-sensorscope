@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1218" />
+    <title>FactoryPulse · 설비 모니터링</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/vendor/chart.umd.min.js" defer></script>
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="rail" aria-label="브랜드">
+      <a class="brand-mark" href="/" aria-label="FactoryPulse 홈"
+        ><svg viewBox="0 0 32 32" fill="none">
+          <path
+            d="M3 18h7l4-11 5 19 4-12 3 4h3"
+            stroke="currentColor"
+            stroke-width="2.8"
+            stroke-linejoin="round"
+          /></svg
+      ></a>
+      <span class="rail-active" aria-label="모니터링"
+        ><svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+      ></span>
+      <span class="rail-foot">FP / 01</span>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <a href="/" class="wordmark"
+          >Factory<span>Pulse</span><span class="version">v0.1.0</span></a
+        >
+        <div class="top-links">
+          <span id="connection" class="connection"><i></i>연결 중</span
+          ><a href="/docs" target="_blank" rel="noopener"
+            >API 문서 <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </header>
+      <main>
+        <div class="heading-row">
+          <div>
+            <p class="eyebrow">OPERATIONS / SENSOR MONITORING</p>
+            <h1>설비의 흐름을, 한눈에.</h1>
+            <p class="subtitle">
+              센서 스트림을 관찰하고 통계적 이상 징후를 확인하세요.
+            </p>
+          </div>
+          <div class="demo-tag">
+            <i></i><span id="mode-label">SYNTHETIC DEMO</span>
+          </div>
+        </div>
+        <div id="error" role="alert" hidden></div>
+        <section class="summary" aria-label="모니터링 요약">
+          <div>
+            <span class="summary-label">등록 설비</span
+            ><strong id="machine-total">03</strong><small>고정 데모 설비</small>
+          </div>
+          <div>
+            <span class="summary-label">현재 정상</span
+            ><strong id="normal-count" class="mint">—</strong
+            ><small id="waiting-count">데이터 연결 중</small>
+          </div>
+          <div>
+            <span class="summary-label">현재 이상</span
+            ><strong id="anomaly-count">—</strong
+            ><small>최신 수신값 기준</small>
+          </div>
+          <div>
+            <span class="summary-label">저장된 이벤트</span
+            ><strong id="event-count">—</strong
+            ><small>이상 측정값 단위 · 최근 1,000건</small>
+          </div>
+        </section>
+        <div class="section-title">
+          <h2>설비 현황 <span>LIVE EQUIPMENT</span></h2>
+          <span class="muted">설비를 선택해 상세 보기</span>
+        </div>
+        <section
+          id="machines"
+          class="machine-grid"
+          aria-label="설비 선택"
+        ></section>
+        <section class="trend panel" aria-labelledby="trend-heading">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" id="selected-location">SENSOR STREAM</p>
+              <h2 id="trend-heading">프레스 01 <span>센서 추이</span></h2>
+            </div>
+            <div class="segmented" role="group" aria-label="센서 종류">
+              <button data-metric="temperature" aria-pressed="false">
+                온도</button
+              ><button
+                data-metric="vibration"
+                class="active"
+                aria-pressed="true"
+              >
+                진동</button
+              ><button data-metric="current" aria-pressed="false">전류</button>
+            </div>
+          </div>
+          <div class="chart-meta">
+            <div>
+              <strong id="current-value">—</strong
+              ><span id="current-unit">mm/s</span
+              ><span id="chart-status" class="pill">대기</span>
+            </div>
+            <div class="legend">
+              <span><i class="line-key"></i>측정값</span
+              ><span
+                ><i class="line-key dashed"></i>기준 범위 (±<span id="threshold"
+                  >3.5</span
+                >σ)</span
+              >
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas
+              id="sensor-chart"
+              role="img"
+              aria-label="선택한 설비의 최근 센서 측정값과 통계적 기준 범위"
+              >센서 추이 그래프. 최신 수치는 위에 표시됩니다.</canvas
+            >
+            <p id="chart-empty" hidden>수신된 데이터가 없습니다.</p>
+          </div>
+          <div class="chart-bottom">
+            <span>최근 60개 측정값 · 브라우저 현지 시각</span
+            ><span id="last-updated">마지막 수신 —</span>
+          </div>
+          <div class="demo-controls">
+            <div>
+              <span class="demo-icon" aria-hidden="true">↗</span>
+              <div>
+                <strong>이상 징후를 직접 확인하세요</strong>
+                <p id="injection-description">
+                  선택한 설비의 진동을 8회 높여 탐지 흐름을 시연합니다.
+                </p>
+              </div>
+            </div>
+            <button id="inject" class="primary" disabled>
+              이상 주입 <span aria-hidden="true">＋</span>
+            </button>
+          </div>
+          <p
+            id="feedback"
+            class="feedback"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </section>
+        <section class="panel events" aria-labelledby="event-heading">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">ANOMALY LOG</p>
+              <h2 id="event-heading">
+                이상 이벤트 <span id="event-scope">전체 설비 · 최근 8건</span>
+              </h2>
+            </div>
+            <label class="filter-label"
+              >표시
+              <select id="event-filter">
+                <option value="all">전체 설비</option>
+                <option value="selected">선택 설비</option>
+              </select></label
+            >
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>발생 시각</th>
+                  <th>설비</th>
+                  <th>감지 센서 / 측정값</th>
+                  <th>최대 |z|</th>
+                  <th>데이터 출처</th>
+                </tr>
+              </thead>
+              <tbody id="event-rows">
+                <tr>
+                  <td colspan="5" class="empty">
+                    아직 기록된 이상 이벤트가 없습니다.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <footer>
+          <p>
+            <span class="footer-dot"></span>가상 데이터 기반 연구·교육용
+            데모입니다. 실제 설비 성능 및 안전을 보증하지 않습니다.
+          </p>
+          <span>FastAPI · SQLite · Chart.js</span>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+machine_id,temperature,vibration,current
+press-01,55.0,0.45,12.0
+motor-02,42.0,0.30,8.0
+pump-03,38.0,0.22,5.5
+press-01,55.2,0.85,12.1
+motor-02,50.5,0.31,8.0
+pump-03,38.1,0.22,7.4
