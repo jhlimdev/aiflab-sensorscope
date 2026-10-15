@@ -24,7 +24,7 @@
 - API 연결 차단 시 오류 표시와 주입 버튼 비활성화
 - 연결 복구 시 자동 갱신 재개
 
-실행 명령과 재현 절차는 [README](../README.md)의 테스트 절을 참고하세요.
+실행 명령과 재현 절차는 [한국어 사용 안내](USER_GUIDE.ko.md)의 테스트 절을 참고하세요.
 설치된 Chrome으로 검증할 때에는 `scripts/browser_smoke.py --browser-channel chrome`을 사용했습니다.
 
 ![실제 데스크톱 실행 화면](images/dashboard.png)
